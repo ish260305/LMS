@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4">
+    <!-- Mobile breadcrumb navigation -->
+    <div class="lg:hidden mb-6">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex flex-wrap items-center text-sm">
+                <a href="{{ url_for('branch', branch_name=branch) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ branch }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <a href="{{ url_for('year', branch_name=branch, year=year) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ year }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <a href="{{ url_for('semester', branch_name=branch, year=year, semester=semester) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ semester }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <a href="{{ url_for('pyq', branch_name=branch, year=year, semester=semester, subject=subject) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ subject }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="flex items-center bg-primary/10 px-3 py-2 rounded-full text-sm">
+                    <span class="text-primary font-medium">{{ exam_type }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced header with decorative elements -->
+    <div class="mb-8 md:mb-12 text-center relative">
+        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{{ subject }} - {{ exam_type }} PYQs</h2>
+        <p class="text-gray-600">{{ branch }} - {{ year }} - {{ semester }}</p>
+        <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-md p-6 lg:p-8 max-w-3xl mx-auto">
+        <div class="flex flex-col items-center justify-center text-center">
+            <div class="bg-primary/10 p-6 rounded-full mb-6">
+                <i class="fas fa-file-pdf text-5xl text-primary"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ exam_type }} Previous Year Questions</h3>
+            <p class="text-gray-600 mb-6">Download the {{ exam_type }} previous year question papers for {{ subject }}</p>
+            
+            <a href="{{ url_for('download_pyq', subject=subject, exam_type=exam_type) }}" 
+               class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg">
+                <i class="fas fa-download mr-2"></i>
+                Download PDF
+            </a>
+            
+            <div class="mt-8 text-gray-500 text-sm">
+                <p>File: {{ filename }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back button with animation -->
+    <div class="mt-8 md:mt-12 text-center">
+        <a href="{{ url_for('pyq', branch_name=branch, year=year, semester=semester, subject=subject) }}" 
+           class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 group">
+            <i class="fas fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+            Back to Exam Types
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,255 @@
+import os
+from flask import Flask, render_template, abort, send_from_directory
+
+app = Flask(__name__)
+
+# Define subjects for each branch and semester (same as before)
+subjects_data = {
+    'Basic Engineering': {
+        '1st Year': {  # Changed from 2nd Year to 1st Year
+            'SEM 1': ['Mathematics I', 'Physics I', 'Chemistry I', 'Engineering Drawing'],
+            'SEM 2': ['Mathematics II', 'Physics II', 'Chemistry II', 'Basic Electrical Engineering']
+        },
+        # Keep the other years as they were
+        '3rd Year': {
+            'SEM 1': ['Data Structures', 'Database Management Systems', 'Computer Networks'],
+            'SEM 2': ['Operating Systems', 'Software Engineering', 'Web Technologies']
+        },
+        '4th Year': {
+            'SEM 1': ['Compiler Design', 'Artificial Intelligence'],
+            'SEM 2': ['Machine Learning', 'Cloud Computing']
+        }
+    },
+    'Computer': {
+        '2nd Year': {
+            'SEM 1': ['Data Structures', 'Digital Logic', 'Computer Organization'],
+            'SEM 2': ['Algorithms', 'Object-Oriented Programming', 'Database Systems']
+        },
+        '3rd Year': {
+            'SEM 1': ['Operating Systems', 'Computer Networks', 'Web Development'],
+            'SEM 2': ['Software Engineering', 'Artificial Intelligence', 'Mobile App Development']
+        },
+        '4th Year': {
+            'SEM 1': ['Cloud Computing', 'Machine Learning', 'Information Security'],
+            'SEM 2': ['Big Data Analytics', 'Internet of Things', 'Project Management']
+        }
+    },
+    'AI-DS': {
+        '2nd Year': {
+            'SEM 1': ['Python Programming', 'Statistics for Data Science', 'Linear Algebra'],
+            'SEM 2': ['Data Structures', 'Probability Theory', 'Database Systems']
+        },
+        '3rd Year': {
+            'SEM 1': ['Machine Learning Fundamentals', 'Data Visualization', 'Big Data Technologies'],
+            'SEM 2': ['Deep Learning', 'Natural Language Processing', 'Computer Vision']
+        },
+        '4th Year': {
+            'SEM 1': ['Reinforcement Learning', 'AI Ethics', 'Advanced Data Analytics'],
+            'SEM 2': ['AI Project', 'Research Methods', 'Industry Applications of AI']
+        }
+    }
+}
+
+# Directory where the HTML notes are stored
+NOTES_DIR = 'notes_html/'
+# Directory where the PDF PYQs are stored
+PYQ_DIR = 'pyq_pdf/'
+
+# Manually map subjects to filenames to avoid transformation issues
+subject_to_filename = {
+    'Mathematics I': 'maths1.html',
+    'Physics I': 'physics1.html',
+    'Mathematics II': 'maths2.html',
+    'Data Structures': 'datastructures.html',
+    'Database Management Systems': 'dbms.html',
+    'Computer Networks': 'computernetworks.html',
+    'Operating Systems': 'operatingsystems.html',
+    'Software Engineering': 'softwareengineering.html',
+    'Web Technologies': 'webtechnologies.html',
+    'Compiler Design': 'compilerdesign.html',
+    'Artificial Intelligence': 'ai.html',
+    'Machine Learning': 'machinelearning.html',
+    'Cloud Computing': 'cloudcomputing.html',
+    # Add more subjects and corresponding filenames here
+}
+
+# Manually map subjects to PYQ PDF filenames
+# Modify the subject_to_pyq dictionary to include INSEM and ENDSEM files
+subject_to_pyq = {
+    'Mathematics I': {
+        'INSEM': 'maths1_insem_pyq.pdf',
+        'ENDSEM': 'maths1_endsem_pyq.pdf'
+    },
+    'Physics I': {
+        'INSEM': 'physics1_insem_pyq.pdf',
+        'ENDSEM': 'physics1_endsem_pyq.pdf'
+    },
+    # Add similar entries for other subjects
+    'Chemistry I': 'chemistry1_pyq.pdf',
+    'Engineering Drawing': 'engineering_drawing_pyq.pdf',
+    'Mathematics II': 'maths2_pyq.pdf',
+    'Physics II': 'physics2_pyq.pdf',
+    'Chemistry II': 'chemistry2_pyq.pdf',
+    'Basic Electrical Engineering': 'basic_electrical_pyq.pdf',
+    'Data Structures': 'datastructures_pyq.pdf',
+    'Database Management Systems': 'dbms_pyq.pdf',
+    'Computer Networks': 'computernetworks_pyq.pdf',
+    'Operating Systems': 'operatingsystems_pyq.pdf',
+    'Software Engineering': 'softwareengineering_pyq.pdf',
+    'Web Technologies': 'webtechnologies_pyq.pdf',
+    'Compiler Design': 'compilerdesign_pyq.pdf',
+    'Artificial Intelligence': 'ai_pyq.pdf',
+    'Machine Learning': 'machinelearning_pyq.pdf',
+    'Cloud Computing': 'cloudcomputing_pyq.pdf',
+    # Add more subjects and corresponding PYQ filenames here
+}
+
+# Function to load HTML notes file using the mapping
+def load_html_notes(subject):
+    filename = subject_to_filename.get(subject)
+    
+    if not filename:
+        return f"<p>Notes for {subject} not found. No mapping for this subject.</p>"
+    
+    notes_file = os.path.join(NOTES_DIR, filename)
+    
+    print(f"Looking for file: {notes_file}")  # Debugging line
+    
+    if os.path.exists(notes_file):
+        with open(notes_file, 'r', encoding='utf-8') as file:
+            content = file.read()
+            # Extract just the body content to avoid conflicts with the main template
+            import re
+            body_content = re.search(r'<body>(.*?)</body>', content, re.DOTALL)
+            if body_content:
+                return body_content.group(1)
+            return content
+    else:
+        return f"<p>Notes for {subject} not found. Tried to load: {notes_file}</p>"
+
+# Function to check if PYQ exists for a subject
+def check_pyq_exists(subject):
+    pyq_files = subject_to_pyq.get(subject)
+    if not pyq_files:
+        return False
+    
+    # Check if at least one of INSEM or ENDSEM exists
+    insem_exists = False
+    endsem_exists = False
+    
+    if 'INSEM' in pyq_files:
+        insem_file = os.path.join(PYQ_DIR, pyq_files['INSEM'])
+        insem_exists = os.path.exists(insem_file)
+    
+    if 'ENDSEM' in pyq_files:
+        endsem_file = os.path.join(PYQ_DIR, pyq_files['ENDSEM'])
+        endsem_exists = os.path.exists(endsem_file)
+    
+    return insem_exists or endsem_exists
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/branch/<branch_name>')
+def branch(branch_name):
+    # Special case for Basic Engineering - go directly to semester selection
+    if branch_name == 'Basic Engineering':
+        return render_template('year.html', branch=branch_name, year='1st Year')
+    # For other branches, show the year selection page
+    return render_template('branch.html', branch=branch_name)
+
+@app.route('/year/<branch_name>/<year>')
+def year(branch_name, year):
+    return render_template('year.html', branch=branch_name, year=year)
+
+@app.route('/semester/<branch_name>/<year>/<semester>')
+def semester(branch_name, year, semester):
+    # New route to choose between Notes and PYQs
+    return render_template('semester.html', branch=branch_name, year=year, semester=semester)
+
+@app.route('/subjects/<branch_name>/<year>/<semester>')
+def subjects(branch_name, year, semester):
+    # Get the subjects based on branch, year, and semester
+    subjects = subjects_data[branch_name][year][semester]
+    return render_template('subjects.html', branch=branch_name, year=year, semester=semester, subjects=subjects)
+
+@app.route('/notes/<branch_name>/<year>/<semester>/<subject>')
+def notes(branch_name, year, semester, subject):
+    print(f"Fetching notes for subject: {subject}")  # Debugging line
+    notes = load_html_notes(subject)
+    return render_template('notes.html', branch=branch_name, year=year, semester=semester, subject=subject, notes=notes)
+
+@app.route('/pyq/<branch_name>/<year>/<semester>')
+def pyq_subjects(branch_name, year, semester):
+    # Get the subjects based on branch, year, and semester
+    subjects = subjects_data[branch_name][year][semester]
+    # Check which subjects have PYQs available
+    subjects_with_pyq = {subject: check_pyq_exists(subject) for subject in subjects}
+    return render_template('pyq_subjects.html', branch=branch_name, year=year, semester=semester, subjects=subjects_with_pyq)
+
+# Update the pyq route to show exam type selection
+@app.route('/pyq/<branch_name>/<year>/<semester>/<subject>')
+def pyq(branch_name, year, semester, subject):
+    print(f"Fetching PYQ options for subject: {subject}")  # Debugging line
+    pyq_files = subject_to_pyq.get(subject)
+    
+    if not pyq_files:
+        abort(404, description=f"PYQ for {subject} not found")
+    
+    # Check which exam types are available
+    available_exams = {}
+    if 'INSEM' in pyq_files:
+        insem_file = os.path.join(PYQ_DIR, pyq_files['INSEM'])
+        available_exams['INSEM'] = os.path.exists(insem_file)
+    else:
+        available_exams['INSEM'] = False
+    
+    if 'ENDSEM' in pyq_files:
+        endsem_file = os.path.join(PYQ_DIR, pyq_files['ENDSEM'])
+        available_exams['ENDSEM'] = os.path.exists(endsem_file)
+    else:
+        available_exams['ENDSEM'] = False
+    
+    return render_template('pyq_exam_type.html', 
+                          branch=branch_name, 
+                          year=year, 
+                          semester=semester, 
+                          subject=subject, 
+                          available_exams=available_exams)
+
+# Add a new route for specific exam type
+@app.route('/pyq/<branch_name>/<year>/<semester>/<subject>/<exam_type>')
+def pyq_download(branch_name, year, semester, subject, exam_type):
+    print(f"Fetching {exam_type} PYQ for subject: {subject}")  # Debugging line
+    pyq_files = subject_to_pyq.get(subject)
+    
+    if not pyq_files or exam_type not in pyq_files:
+        abort(404, description=f"{exam_type} PYQ for {subject} not found")
+    
+    filename = pyq_files[exam_type]
+    
+    return render_template('pyq_download.html', 
+                          branch=branch_name, 
+                          year=year, 
+                          semester=semester, 
+                          subject=subject,
+                          exam_type=exam_type,
+                          filename=filename)
+
+# Update the download route to include exam type
+@app.route('/download_pyq/<subject>/<exam_type>')
+def download_pyq(subject, exam_type):
+    pyq_files = subject_to_pyq.get(subject)
+    
+    if not pyq_files or exam_type not in pyq_files:
+        abort(404, description=f"{exam_type} PYQ for {subject} not found")
+    
+    filename = pyq_files[exam_type]
+    
+    return send_from_directory(directory=PYQ_DIR, path=filename, as_attachment=True)
+
+if __name__ == '__main__':
+    print(f"Absolute path to notes directory: {os.path.abspath(NOTES_DIR)}")  # Debugging line
+    print(f"Absolute path to PYQ directory: {os.path.abspath(PYQ_DIR)}")  # Debugging line
+    app.run(debug=True)
