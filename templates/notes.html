@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4">
+    <!-- Mobile navigation buttons - Only visible on mobile -->
+    <div class="lg:hidden mb-6">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gradient-to-r from-primary to-primary/80 p-3 text-white text-center">
+                <h3 class="font-bold">Navigation Path</h3>
+            </div>
+            <div class="p-3">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <a href="{{ url_for('index') }}" 
+                       class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                        <i class="fas fa-home text-primary"></i>
+                    </a>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </div>
+                    <a href="{{ url_for('branch', branch_name=branch) }}" 
+                       class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                        <span class="text-primary font-medium">{{ branch }}</span>
+                    </a>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </div>
+                    <a href="{{ url_for('year', branch_name=branch, year=year) }}" 
+                       class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                        <span class="text-primary font-medium">{{ year }}</span>
+                    </a>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </div>
+                    <a href="{{ url_for('subjects', branch_name=branch, year=year, semester=semester) }}" 
+                       class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                        <span class="text-primary font-medium">{{ semester }}</span>
+                    </a>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </div>
+                    <div class="flex items-center bg-primary/10 px-3 py-2 rounded-full text-sm">
+                        <span class="text-primary font-medium">{{ subject }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick mobile actions -->
+            <div class="grid grid-cols-2 divide-x border-t">
+                <a href="{{ url_for('subjects', branch_name=branch, year=year, semester=semester) }}" 
+                   class="flex items-center justify-center p-3 text-gray-700 hover:bg-gray-50">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span>Back</span>
+                </a>
+                <button id="mobile-print" class="flex items-center justify-center p-3 text-primary hover:bg-gray-50">
+                    <i class="fas fa-print mr-2"></i>
+                    <span>Print</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced header with decorative elements -->
+    <div class="mb-8 md:mb-12 text-center relative">
+        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{{ subject }}</h2>
+        <p class="text-gray-600">{{ branch }} - {{ year }} - {{ semester }}</p>
+        <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+    </div>
+    
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Sticky Table of contents sidebar - Only visible on larger screens -->
+        <div class="hidden lg:block lg:w-1/4">
+            <div class="bg-white rounded-xl shadow-md p-6 lg:sticky lg:top-4">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-list-ul text-primary mr-2"></i> Table of Contents
+                </h3>
+                <div class="toc-content" id="toc">
+                    <!-- Will be populated by JavaScript -->
+                    <div class="animate-pulse">
+                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                    </div>
+                </div>
+                
+                <!-- Quick navigation buttons -->
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <a href="{{ url_for('subjects', branch_name=branch, year=year, semester=semester) }}" 
+                       class="flex items-center justify-center w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 group mb-2">
+                        <i class="fas fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+                        Back to Subjects
+                    </a>
+                    <button id="print-notes" 
+                            class="flex items-center justify-center w-full px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all duration-300 group">
+                        <i class="fas fa-print mr-2"></i>
+                        Print Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notes content - For both mobile and desktop -->
+        <div class="lg:w-3/4">
+            <div class="bg-white rounded-xl shadow-md p-6 lg:p-8">
+                <div class="notes-content prose prose-headings:text-primary prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-img:shadow-md max-w-none">
+                    {{ notes | safe }}
+                </div>
+            </div>
+            
+            <!-- Mobile actions at the bottom -->
+            <div class="lg:hidden mt-6 flex justify-center">
+                <a href="{{ url_for('subjects', branch_name=branch, year=year, semester=semester) }}" 
+                   class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 group mr-4">
+                    <i class="fas fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+                    Back
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reading progress indicator -->
+    <div class="fixed bottom-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div id="reading-progress" class="h-full bg-gradient-to-r from-primary to-secondary w-0"></div>
+    </div>
+</div>
+
+<script>
+    // Generate table of contents from headings
+    document.addEventListener('DOMContentLoaded', function() {
+        const notesContent = document.querySelector('.notes-content');
+        const toc = document.getElementById('toc');
+        
+        if (notesContent && toc) {
+            // Style the notes content
+            const headings = notesContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            
+            // Remove any existing styles from the notes HTML
+            const existingStyles = notesContent.querySelectorAll('style');
+            existingStyles.forEach(style => style.remove());
+            
+            // Apply consistent styling to elements
+            notesContent.querySelectorAll('ul, ol').forEach(list => {
+                list.classList.add('my-4', 'space-y-2');
+            });
+            
+            notesContent.querySelectorAll('li').forEach(item => {
+                item.classList.add('text-gray-700');
+            });
+            
+            notesContent.querySelectorAll('p').forEach(p => {
+                p.classList.add('text-gray-700', 'my-4');
+            });
+            
+            notesContent.querySelectorAll('a').forEach(a => {
+                // Don't style the back button if it exists
+                if (!a.textContent.includes('Back to')) {
+                    a.classList.add('text-primary', 'hover:text-secondary', 'transition-colors');
+                } else {
+                    // Remove any existing back buttons in the content
+                    a.remove();
+                }
+            });
+            
+            // Generate TOC if headings exist
+            if (headings.length > 0) {
+                const tocList = document.createElement('ul');
+                tocList.className = 'space-y-2';
+                
+                headings.forEach((heading, index) => {
+                    // Add ID to heading if it doesn't have one
+                    if (!heading.id) {
+                        heading.id = `heading-${index}`;
+                    }
+                    
+                    // Add hover effect to headings
+                    heading.classList.add('group', 'flex', 'items-center');
+                    
+                    // Add anchor link icon
+                    const anchorLink = document.createElement('a');
+                    anchorLink.href = `#${heading.id}`;
+                    anchorLink.className = 'ml-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity';
+                    anchorLink.innerHTML = '<i class="fas fa-link text-sm"></i>';
+                    heading.appendChild(anchorLink);
+                    
+                    const level = parseInt(heading.tagName.substring(1));
+                    const listItem = document.createElement('li');
+                    listItem.className = `ml-${(level-1)*4} text-${level === 1 ? 'lg' : 'base'} ${level <= 2 ? 'font-medium' : ''}`;
+                    
+                    const link = document.createElement('a');
+                    link.href = `#${heading.id}`;
+                    link.className = 'text-primary hover:text-secondary transition-colors flex items-center';
+                    link.innerHTML = `<span class="mr-2 text-xs">•</span> ${heading.textContent.replace('<i class="fas fa-link text-sm"></i>', '')}`;
+                    
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(`#${heading.id}`).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                    
+                    listItem.appendChild(link);
+                    tocList.appendChild(listItem);
+                });
+                
+                toc.innerHTML = '';
+                toc.appendChild(tocList);
+            } else {
+                toc.innerHTML = '<p class="text-gray-500 italic">No sections found in this document.</p>';
+            }
+        }
+        
+        // Reading progress indicator
+        const progressBar = document.getElementById('reading-progress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+            const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100;
+            progressBar.style.width = scrollPercentage + '%';
+        });
+        
+        // Print functionality - connect both buttons
+        document.getElementById('print-notes').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Mobile print button
+        const mobilePrintBtn = document.getElementById('mobile-print');
+        if (mobilePrintBtn) {
+            mobilePrintBtn.addEventListener('click', function() {
+                window.print();
+            });
+        }
+    });
+</script>
+
+<style>
+    /* Print styles */
+    @media print {
+        header, footer, .toc-content, #print-notes, #reading-progress, #mobile-print {
+            display: none !important;
+        }
+        
+        .notes-content {
+            font-size: 12pt;
+        }
+        
+        .notes-content h1, .notes-content h2, .notes-content h3, 
+        .notes-content h4, .notes-content h5, .notes-content h6 {
+            page-break-after: avoid;
+        }
+        
+        .notes-content p, .notes-content li {
+            page-break-inside: avoid;
+        }
+    }
+</style>
+{% endblock %}

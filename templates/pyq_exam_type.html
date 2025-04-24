@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4">
+    <!-- Mobile breadcrumb navigation -->
+    <div class="lg:hidden mb-6">
+        <div class="bg-white rounded-xl shadow-sm p-4">
+            <div class="flex flex-wrap items-center text-sm">
+                <a href="{{ url_for('branch', branch_name=branch) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ branch }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <a href="{{ url_for('year', branch_name=branch, year=year) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ year }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <a href="{{ url_for('semester', branch_name=branch, year=year, semester=semester) }}" 
+                   class="flex items-center bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full text-sm transition-all">
+                    <span class="text-primary font-medium">{{ semester }}</span>
+                </a>
+                <div class="w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+                <div class="flex items-center bg-primary/10 px-3 py-2 rounded-full text-sm">
+                    <span class="text-primary font-medium">{{ subject }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced header with decorative elements -->
+    <div class="mb-8 md:mb-12 text-center relative">
+        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{{ subject }} - PYQs</h2>
+        <p class="text-gray-600">{{ branch }} - {{ year }} - {{ semester }}</p>
+        <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-16 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+        </div>
+    </div>
+    
+    <div class="max-w-3xl mx-auto">
+        <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Select Exam Type</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- INSEM Card -->
+            <div class="group bg-white rounded-xl shadow-md hover:shadow-xl p-6 transition-all duration-300 border border-gray-100 hover:border-primary relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform"></div>
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="bg-primary/10 p-4 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
+                        <i class="fas fa-file-pdf text-3xl text-primary"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">In-Semester Exam</h4>
+                    <p class="text-gray-600 text-sm mb-4">Previous year INSEM question papers</p>
+                    
+                    {% if available_exams.INSEM %}
+                    <a href="{{ url_for('pyq_download', branch_name=branch, year=year, semester=semester, subject=subject, exam_type='INSEM') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-300">
+                        <span>View INSEM PYQs</span>
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    {% else %}
+                    <span class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        Not Available
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- ENDSEM Card -->
+            <div class="group bg-white rounded-xl shadow-md hover:shadow-xl p-6 transition-all duration-300 border border-gray-100 hover:border-primary relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-bl-full transform translate-x-8 -translate-y-8 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform"></div>
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="bg-primary/10 p-4 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
+                        <i class="fas fa-file-pdf text-3xl text-primary"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">End-Semester Exam</h4>
+                    <p class="text-gray-600 text-sm mb-4">Previous year ENDSEM question papers</p>
+                    
+                    {% if available_exams.ENDSEM %}
+                    <a href="{{ url_for('pyq_download', branch_name=branch, year=year, semester=semester, subject=subject, exam_type='ENDSEM') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-300">
+                        <span>View ENDSEM PYQs</span>
+                        <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    {% else %}
+                    <span class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        Not Available
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back button with animation -->
+    <div class="mt-8 md:mt-12 text-center">
+        <a href="{{ url_for('pyq_subjects', branch_name=branch, year=year, semester=semester) }}" 
+           class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 group">
+            <i class="fas fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+            Back to Subjects
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics I Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h3 {
+            color: #4CAF50;
+        }
+        h4 {
+            color: #555;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .notes-content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>Physics I Notes</h3>
+    <p>These are the notes for Physics I in the 2nd Year, SEM 1 of the Basic Engineering course.</p>
+
+    <h4>Topics Covered:</h4>
+    <ul>
+        <li>Mechanics</li>
+        <li>Thermodynamics</li>
+        <li>Waves and Oscillations</li>
+        <li>Optics</li>
+        <li>Fluid Mechanics</li>
+    </ul>
+
+    <h4>Key Concepts:</h4>
+    <ul>
+        <li>Newton's Laws of Motion</li>
+        <li>Thermodynamic Laws</li>
+        <li>Wave Equations and Sound Waves</li>
+        <li>Reflection and Refraction of Light</li>
+        <li>Buoyancy and Archimedes' Principle</li>
+    </ul>
+
+    <h4>Formulas:</h4>
+    <ul>
+        <li>Force = Mass × Acceleration (F = ma)</li>
+        <li>Work = Force × Distance (W = F × d)</li>
+        <li>Pressure = Force / Area (P = F / A)</li>
+        <li>Gravitational Potential Energy = m × g × h</li>
+        <li>Ohm's Law: V = IR</li>
+    </ul>
+
+    <p>These notes provide a basic overview of the subject. Further detailed notes can be found in textbooks and other reference materials.</p>
+
+    <a href="{{ url_for('subjects', branch_name=branch, year=year, semester=semester) }}">Back to Subjects</a>
+    
+</body>
+</html>

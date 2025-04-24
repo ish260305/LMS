@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 text-center">
+    <div class="bg-white rounded-xl shadow-lg p-8 md:p-12">
+        <div class="mb-8">
+            <div class="bg-red-100 p-6 rounded-full w-24 h-24 mx-auto flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-red-500 text-4xl"></i>
+            </div>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Application Expired</h1>
+        
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 inline-block">
+            <p class="text-red-600">
+                This application expired on <span class="font-bold">{{ expiration_date }}</span>
+            </p>
+        </div>
+        
+        <div class="max-w-2xl mx-auto mb-8">
+            <p class="text-gray-800 font-medium mb-4">
+                This application was created by <span class="text-primary font-bold">Nikhil Shrivastava</span>.
+            </p>
+            <p class="text-gray-600 mb-4">
+                Due to unauthorized access, this code has been used without proper attribution to the original creator.
+                As a security measure, this application has automatically expired.
+            </p>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+                <p class="text-yellow-700 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    All legitimate users should contact the original creator for proper licensing and continued access.
+                </p>
+            </div>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="mailto:nikhil.shrivastava304@gmail.com" class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg">
+                <i class="fas fa-envelope mr-2"></i>
+                Contact Creator
+            </a>
+            
+            <a href="https://github.com/nikhil-304" class="inline-flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                <i class="fab fa-github mr-2"></i>
+                Visit Creator's GitHub
+            </a>
+        </div>
+    </div>
+    
+    <div class="mt-8 text-gray-500 text-sm">
+        <p>© {{ now.year }} Nikhil Shrivastava. All rights reserved.</p>
+    </div>
+</div>
+{% endblock %}

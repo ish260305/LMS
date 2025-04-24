@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ branch }}</h2>
+        <p class="text-gray-600">Select your academic year to continue</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="{{ url_for('year', branch_name=branch, year='2nd Year') }}" 
+           class="transform hover:scale-105 transition-all duration-300 bg-white rounded-xl shadow-soft p-6 flex flex-col items-center justify-center space-y-4 border border-gray-100 hover:border-primary hover:shadow-glow group">
+            <div class="bg-primary/10 p-4 rounded-full group-hover:bg-primary/20 transition-colors">
+                <i class="fas fa-2 text-4xl text-primary"></i>
+            </div>
+            <span class="text-lg font-medium text-gray-700">2nd Year</span>
+        </a>
+        
+        <a href="{{ url_for('year', branch_name=branch, year='3rd Year') }}" 
+           class="transform hover:scale-105 transition-all duration-300 bg-white rounded-xl shadow-soft p-6 flex flex-col items-center justify-center space-y-4 border border-gray-100 hover:border-primary hover:shadow-glow group">
+            <div class="bg-primary/10 p-4 rounded-full group-hover:bg-primary/20 transition-colors">
+                <i class="fas fa-3 text-4xl text-primary"></i>
+            </div>
+            <span class="text-lg font-medium text-gray-700">3rd Year</span>
+        </a>
+        
+        <a href="{{ url_for('year', branch_name=branch, year='4th Year') }}" 
+           class="transform hover:scale-105 transition-all duration-300 bg-white rounded-xl shadow-soft p-6 flex flex-col items-center justify-center space-y-4 border border-gray-100 hover:border-primary hover:shadow-glow group">
+            <div class="bg-primary/10 p-4 rounded-full group-hover:bg-primary/20 transition-colors">
+                <i class="fas fa-4 text-4xl text-primary"></i>
+            </div>
+            <span class="text-lg font-medium text-gray-700">4th Year</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
